@@ -33,12 +33,11 @@ An iOS Swift application for group comunication. User can use this app to share 
     
 
 Our small survey:
-https://docs.google.com/forms/d/
+https://docs.google.com/forms/d/1SmK7uBspaH23wReSyJGkhL7-9xrcW4uppJv87b3A4gA/viewanalytics
 
 ### Wireframe Walkthrough
 ![Video Walkthrough](wireframe.gif)
 
-You can also try on browsers: https://mockingbot.com/
 
 Libraries we are using:
 - FireBase
