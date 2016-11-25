@@ -96,6 +96,16 @@ class User {
         _userRef = DataService.ds.REF_USERS.child(userKey)
     }
     
+    func toAnyObject() -> [String: AnyObject] {
+        return [USER_NAME: userName as AnyObject,
+                USER_EMAIL: email as AnyObject,
+                USER_MOBILE_NUMBER: mobileNumber as AnyObject,
+                USER_PIC_URL: profilePicUrl as AnyObject,
+                USER_LOCATION: location as AnyObject,
+                USER_GROUPS: groups as AnyObject
+        ]
+    }
+    
     func addToDatabase() {
         if self.dictData == nil {
             return

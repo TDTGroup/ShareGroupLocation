@@ -16,45 +16,40 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     
+    override init() {
+        super.init()
+        // Use Firebase library to configure APIs
+        FIRApp.configure()
+    }
     
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        
-        self.window = UIWindow(frame: UIScreen.main.bounds)
-        
+    func login() {
         if AuthUser.currentAuthUser != nil {
             print("HAS CURRENT USER \(AuthUser.currentAuthUser?.uid)")
-        } else {
-            print("HAS NO CURRENT USER")
-        }
-        
-        if AuthUser.currentAuthUser != nil {
-            let userProfileStoryBoard = UIStoryboard(name: "UserProfile", bundle: nil)
-            let userProfileVC = userProfileStoryBoard.instantiateViewController(withIdentifier: "UserProfile")
+            /*let userProfileStoryBoard = UIStoryboard(name: "UserProfile", bundle: nil)
+            let userProfileVC = userProfileStoryBoard.instantiateViewController(withIdentifier: "UserProfileVC")
             
             self.window?.rootViewController = userProfileVC
             self.window?.makeKeyAndVisible()
-        } else {
-            let loginStoryBoard = UIStoryboard(name: "Login", bundle: nil)
-            let loginVC = loginStoryBoard.instantiateViewController(withIdentifier: "LoginViewController")
+            */
             
-            self.window?.rootViewController = loginVC
+            let userProfileStoryBoard = UIStoryboard(name: "TabBar", bundle: nil)
+            let userProfileVC = userProfileStoryBoard.instantiateViewController(withIdentifier: "TabBarController")
+            
+            self.window?.rootViewController = userProfileVC
             self.window?.makeKeyAndVisible()
-            //            self.displayLoginScreen()
+            
+        } else {
+            print("HAS NO CURRENT USER")
+            let PreLoginVC = UIStoryboard(name: "Login_Signup", bundle: nil).instantiateViewController(withIdentifier: "PreLoginVC")
+            self.window?.rootViewController = PreLoginVC
+            self.window?.makeKeyAndVisible()
         }
+    }
+    
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        self.window = UIWindow(frame: UIScreen.main.bounds)
         
-        //        NotificationCenter.default.addObserver(forName: (AuthUser.currentAuthUser?.didLogOutNotificationKey).map { NSNotification.Name(rawValue: $0) }, object: nil, queue: OperationQueue.main) { (NSNotification) in
-        //
-        //            let loginStoryBoard = UIStoryboard(name: "Login", bundle: nil)
-        //            let loginVC = loginStoryBoard.instantiateViewController(withIdentifier: "LoginViewController")
-        //
-        //            self.window?.rootViewController = loginVC
-        //            self.window?.makeKeyAndVisible()
-        ////            self.displayLoginScreen()
-        //        }
-        
-        
-        // Use Firebase library to configure APIs
-        FIRApp.configure()
+        login()
         
         // Facebook Delegate
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
@@ -64,14 +59,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         GIDSignIn.sharedInstance().delegate = self
         
         return true
-    }
-    
-    func displayLoginScreen() {
-        let loginStoryBoard = UIStoryboard(name: "Login", bundle: nil)
-        let loginVC = loginStoryBoard.instantiateViewController(withIdentifier: "LoginViewController")
-        
-        self.window?.rootViewController = loginVC
-        self.window?.makeKeyAndVisible()
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
@@ -130,14 +117,10 @@ extension AppDelegate: GIDSignInDelegate {
             print("Firebase Logged IN with Google account: \(uid)")
             AuthUser.currentAuthUser = AuthUser(authUserData: (FIRAuth.auth()?.currentUser)!)
             
-            // [1] Create a new "UserProfile" instance.
-            let userProfileStoryBoard = UIStoryboard(name: "UserProfile", bundle: nil)
-            
-            // [2] Create an instance of the storyboard's initial view controller.
-            let userProfileVC = userProfileStoryBoard.instantiateViewController(withIdentifier: "UserProfile") as UIViewController
-            
-            // [3] Display the new view controller.
-            //self.window?.rootViewController?.present(userProfileVC, animated: true, completion: nil)
+            // Create an instance of the storyboard's initial view controller.
+            let userProfileVC:UIViewController = UIStoryboard(name: "UserProfile", bundle: nil).instantiateViewController(withIdentifier: "UserProfileVC")
+            // Display the new view controller.
+            //self.present(userProfileVC, animated: true, completion: nil)
             self.window?.rootViewController = userProfileVC
             self.window?.makeKeyAndVisible()
         })

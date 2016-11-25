@@ -17,8 +17,89 @@ class UserProfileViewController: UIViewController {
     @IBOutlet weak var mobileNumberTextfield: UITextField!
     @IBOutlet weak var groupTextfield: UITextField!
     
+    override func viewWillAppear(_ animated: Bool) {
+        if (FIRAuth.auth()?.currentUser == nil) {//(AuthUser._currentAuthUser == nil){
+            print("HAS NO CURRENT USER")
+            
+            let alertControler = UIAlertController(title: "Oops!", message: "HAS NO CURRENT USER", preferredStyle: .alert)
+            let defaultAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+            alertControler.addAction(defaultAction)
+            self.present(alertControler, animated: true, completion: nil)
+            
+            DispatchQueue.main.async {
+                DispatchQueue.main.async(execute: { () -> Void in
+                    
+                    let viewController:UIViewController = UIStoryboard(name: "Login", bundle: nil).instantiateViewController(withIdentifier: "LoginVC")
+                    self.present(viewController, animated: true, completion: nil)
+                })
+            }
+            return
+        }
+        print("HAS CURRENT USER \(AuthUser.currentAuthUser?.uid)")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        if (FIRAuth.auth()?.currentUser == nil) {//(AuthUser._currentAuthUser == nil){
+            let alertControler = UIAlertController(title: "Oops!", message: "HAS NO CURRENT USER", preferredStyle: .alert)
+            let defaultAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+            alertControler.addAction(defaultAction)
+            self.present(alertControler, animated: true, completion: nil)
+        }
+        
+        
+        /*
+        // ====== DEMO CODE GET GROUPS: BEGIN
+        DataService().REF_GROUPS.observe(.value, with: { (snapshot) in
+            
+            var newGroups = [Group]()
+            
+            for group in snapshot.children {
+                
+                let newGroup = Group(snapshot: group as! FIRDataSnapshot)
+                newGroups.insert(newGroup, at: 0)
+                
+            }
+            //self.groupsArray = newGroups
+            //self.tableView.reloadData()
+            
+        }) { (error) in
+            print(error.localizedDescription)
+        }
+        
+        
+        // ADD GROUP
+        
+        let newgroupRef = DataService().REF_GROUPS.childByAutoId()
+        //newgroupRef.setValue(<#T##value: Any?##Any?#>)
+        
+        
+        // QUERY 
+        
+        let groupNodeRef = DataService().REF_GROUPS
+        //groupNodeRef.queryEqual(toValue: <#T##Any?#>)
+        
+        
+        // ====== DEMO CODE GET GROUPS: END
+        
+        
+        
+        // GET USER: BEGIN
+        // QUERY
+        
+        let userNodeRef = DataService().REF_USERS
+        userNodeRef.queryOrdered(byChild: "groups")
+                    .queryEqual(toValue: "group-001")
+        .value(forKey: "user-id")
+        
+        // GET USER: END
+        
+        */
+        
+
+        
+        
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -39,13 +120,6 @@ class UserProfileViewController: UIViewController {
     
     // which will set up the JSON in firebase and set values for the comment, the user who posted it, and post id its for.
     func postToFirebase() {
-        
-//        let usersNodeRef = DataService.ds.REF_USERS
-//        let userKey = usersNodeRef.childByAutoId().key
-//        let userData = [ USER_EMAIL: emailTextfield.text,
-//                         USER_MOBILE_NUMBER: mobileNumberTextfield.text]
-//        let childUpdate = ["\(userKey)": userData]
-//        usersNodeRef.updateChildValues(childUpdate)
         
         let newUser = User(userName: "name",
                            email: emailTextfield.text,
@@ -68,24 +142,13 @@ class UserProfileViewController: UIViewController {
         GIDSignIn.sharedInstance().signOut()
         FBSDKLoginManager().logOut()
         AuthUser.currentAuthUser = nil
-        
-        //NotificationCenter.default.post(name: Notification.Name(rawValue: (AuthUser.currentAuthUser?.didLogOutNotificationKey)!), object: self)
         signOutOverride()
     }
     
-    func signOutOverride() {
-        try! FIRAuth.auth()!.signOut()
-        //CredentialState.sharedInstance.signedIn = false
-        // Set the view to the login screen after signing out
-        // [1] Create a new "loginStoryBoard" instance.
-        let loginStoryBoard = UIStoryboard(name: "Login", bundle: nil)
-        
-        // [2] Create an instance of the storyboard's initial view controller.
-        let loginVC = loginStoryBoard.instantiateViewController(withIdentifier: "LoginViewController") as UIViewController
-        
-        // [3] Display the new view controller.
-        //self.present(loginVC, animated: true, completion: nil)
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        appDelegate.window?.rootViewController = loginVC
-    }
+//    func signOutOverride() {
+//        try! FIRAuth.auth()!.signOut()
+//        
+//        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+//        appDelegate.login()
+//    }
 }

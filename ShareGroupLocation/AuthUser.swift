@@ -129,4 +129,13 @@ class AuthUser {
             self.description = ""
         }
     }
+    
+    func toAnyObject() -> [String: AnyObject] {
+        return ["email" : email as AnyObject,
+                "providerID" : providerID as AnyObject,
+                "displayName" : displayName as AnyObject,
+                "photoURL" : photoURL as AnyObject,
+                "description" : description as AnyObject
+        ]
+    }
 }

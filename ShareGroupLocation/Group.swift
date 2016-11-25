@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Firebase
 import FirebaseDatabase
 
 let GROUP_NAME = "group-name"
@@ -82,5 +83,22 @@ class Group {
         }
         
         _groupRef = DataService.ds.REF_GROUPS.child(groupKey)
+    }
+    
+    init(snapshot: FIRDataSnapshot){
+        self.groupKey = snapshot.key
+        
+        let dict = snapshot.value as? Dictionary<String, AnyObject>
+        
+        self.groupName = dict![GROUP_NAME] as? String
+        self.groupMemberCount = (dict![GROUP_MEMBER_COUNT] as? Int)!
+        self.groupCreatedByUser = dict![GROUP_CREATED_BY_USER] as? String
+        self.groupMeeetingDesc = dict![GROUP_MEETING_DESC] as? String
+        self.groupMeeetingDate = dict![GROUP_MEETING_DATE] as? Date
+        self.groupMeeetingTime = dict![GROUP_MEETING_TIME] as? String
+        self.groupMeeetingLocation = dict![GROUP_MEETING_LOCATION] as? String
+        self.groupMeeetingMembers = dict![GROUP_MEETING_MEMBERS] as? [String]
+        
+        _groupRef = snapshot.ref
     }
 }

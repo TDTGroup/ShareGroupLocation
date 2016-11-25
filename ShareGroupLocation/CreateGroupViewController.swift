@@ -10,9 +10,16 @@ import UIKit
 
 class CreateGroupViewController: UIViewController {
 
+    @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var tableView: UITableView!
+    
+    var contact = [NSDictionary]()
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        tableView.delegate = self
+        tableView.dataSource = self
+        searchBar.delegate = self
         // Do any additional setup after loading the view.
     }
 
@@ -31,5 +38,30 @@ class CreateGroupViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
+    
+    func loadDataContact() {
+        
+    }
+}
 
+extension CreateGroupViewController : UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "contactViewCell") as! ContactViewCell
+        
+        return cell
+    }
+}
+
+extension CreateGroupViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        
+    }
 }

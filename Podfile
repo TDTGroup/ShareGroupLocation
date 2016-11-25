@@ -10,7 +10,15 @@ target 'ShareGroupLocation' do
   pod 'FBSDKShareKit'
   pod 'FBSDKLoginKit'
   pod 'GoogleSignIn'
+  pod 'Firebase'
+  pod 'Firebase/Core'
   pod 'Firebase/Auth'
   pod 'Firebase/Database'
+  pod 'Firebase/Storage'
+  
+  pod 'AFNetworking'
+  pod 'GooglePlaces'
+  pod 'GooglePlacePicker'
+  pod 'GoogleMaps'
 
 end

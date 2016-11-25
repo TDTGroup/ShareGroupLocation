@@ -7,12 +7,13 @@
 //
 
 import Foundation
+import FirebaseAuth
 import FirebaseDatabase
 
 // URL of our Firebase database
 let DB_BASE = FIRDatabase.database().reference()
 
-class DataService {
+struct DataService {
     // Singleton
     static let ds = DataService()
     
@@ -46,5 +47,43 @@ class DataService {
     func createFirebaseDbUser(uid: String, userData: Dictionary<String, Any>) {
         // when creating a user, it will create uid, and update the child values with the userData we pass in
         REF_USERS.child(uid).updateChildValues(userData)
+    }
+    
+    // 3 - Add User Info to Firebase Database, then log in
+    func saveUserInfo(user: FIRUser!, password: String, userName: String, mobileNumber: String,
+                      completion: @escaping (Error?) -> Void){
+        
+        let userInfo = [USER_NAME: userName as AnyObject,
+                        USER_EMAIL: user.email as AnyObject,
+                        USER_MOBILE_NUMBER: mobileNumber as AnyObject,
+                        USER_PIC_URL: String(describing: user.photoURL!) as AnyObject]
+        
+        REF_USERS.child(user.uid).setValue(userInfo) { (error, ref) in
+            if error != nil {
+                print(error!.localizedDescription)
+                completion(error)
+                return
+            }
+            print("User info saved successfully")
+        }
+    }
+    
+    // 3 - Add User Info to Firebase Database, then log in
+    func saveUserInfo2(user: FIRUser!, mobileNumber: String,
+                       completion: @escaping (Error?) -> Void){
+        
+        let userInfo = [USER_NAME: user.displayName as AnyObject,
+                        USER_EMAIL: user.email as AnyObject,
+                        USER_MOBILE_NUMBER: mobileNumber as AnyObject,
+                        USER_PIC_URL: String(describing: user.photoURL!) as AnyObject]
+        
+        REF_USERS.child(user.uid).setValue(userInfo) { (error, ref) in
+            if error != nil {
+                print(error!.localizedDescription)
+                completion(error)
+                return
+            }
+            print("User info saved successfully")
+        }
     }
 }
