@@ -30,42 +30,7 @@ struct StorageService {
     }
     
     // 2 - Save the User Profile Picture to Firebase Storage, Assign to the new user a username and Photo URL
-    func setUserInfo(user: FIRUser!, password: String, userName: String, mobileNumber: String, pictureData: NSData!,
-                     completion: @escaping (Error?) -> Void){
-        
-        let imagePath = "\(user.uid)/userProfilePic.jpg"
-        let imageRef = REF_USER_PROFILE_PIC.child(imagePath)
-        let metaData = FIRStorageMetadata()
-        metaData.contentType = "image/jpeg"
-        
-        imageRef.put(pictureData as Data, metadata: metaData) { (newMetaData, error) in
-            if error != nil {
-                // Error uploading user profile picture to Firebase storage
-                print(error!.localizedDescription)
-                completion(error)
-                return
-            }
-            
-            // Update Auth user profile picture
-            let changeRequest = user.profileChangeRequest()
-            changeRequest.displayName = userName
-            if let photoURL = newMetaData!.downloadURL() {
-                changeRequest.photoURL = photoURL
-            }
-            
-            changeRequest.commitChanges(completion: { (error) in
-                if error != nil {
-                    // Error updating Auth user profile
-                    print(error!.localizedDescription)
-                    completion(error)
-                    return
-                }
-            })
-        }
-    }
-    
-    // 2 - Save the User Profile Picture to Firebase Storage, Assign to the new user a username and Photo URL
-    func setUserInfo2(user: FIRUser!, userName: String, pictureData: NSData!,
+    func setUserInfo(user: FIRUser!, userName: String, pictureData: NSData!,
                       completion: @escaping (FIRUser?, Error?) -> Void){
         
         let imagePath = "\(user.uid)/userProfilePic.jpg"
@@ -73,13 +38,15 @@ struct StorageService {
         let metaData = FIRStorageMetadata()
         metaData.contentType = "image/jpeg"
         
+        print("2.1 ------ BEGIN OF: -- imageRef.put")
         imageRef.put(pictureData as Data, metadata: metaData) { (newMetaData, error) in
             if error != nil {
+                
                 // Error uploading user profile picture to Firebase storage
                 print(error!.localizedDescription)
-                completion(nil, error)
-                return
+                return completion(nil, error)
             }
+            
             
             // Update Auth user profile picture
             let changeRequest = user.profileChangeRequest()
@@ -88,18 +55,23 @@ struct StorageService {
                 changeRequest.photoURL = photoURL
             }
             
+            print("2.2 ------ BEGIN OF: -- changeRequest.commitChanges")
             changeRequest.commitChanges(completion: { (error) in
                 if error != nil {
                     // Error updating Auth user profile
                     print(error!.localizedDescription)
                     completion(nil, error)
-                    return
                 }
+                
+                print("NO ERROR HERE: commitChanges")
+                // Update OK
+                completion(user, nil)
+                
             })
+            print("2.2 ------ END OF: -- changeRequest.commitChanges")
             
-            // Update OK
-            completion(user, nil)
         }
+        print("2.1 ------ END OF: -- imageRef.put")
     }
 }
 

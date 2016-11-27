@@ -214,19 +214,19 @@
 			children = (
 				6D23204E1DD71ABC002401EE /* AppDelegate.swift */,
 				6D2320551DD71ABC002401EE /* Assets.xcassets */,
+				138678821DDAA51600CCBDBB /* ShareGroupLocation.entitlements */,
 				131B1CBC1DDABC85002519B5 /* GoogleService-Info.plist */,
-				6D2320521DD71ABC002401EE /* Group.storyboard */,
 				6D23205A1DD71ABC002401EE /* Info.plist */,
 				6D2320571DD71ABC002401EE /* LaunchScreen.storyboard */,
-				1312DF941DE0347B00E70E79 /* Login_Signup.storyboard */,
-				1386787E1DDA9C2500CCBDBB /* Login.storyboard */,
+				1319CE721DE752C600E75D31 /* TabBar.storyboard */,
+				6D2320521DD71ABC002401EE /* Group.storyboard */,
 				1333752B1DE8652B00FA985A /* Map.storyboard */,
 				1319CE741DE7543300E75D31 /* Message.storyboard */,
+				1312DF941DE0347B00E70E79 /* Login_Signup.storyboard */,
+				131B1CBE1DDAE43F002519B5 /* UserProfile.storyboard */,
+				1386787E1DDA9C2500CCBDBB /* Login.storyboard */,
 				138678751DDA9B7500CCBDBB /* Model */,
 				138678721DDA9B1600CCBDBB /* Service */,
-				138678821DDAA51600CCBDBB /* ShareGroupLocation.entitlements */,
-				1319CE721DE752C600E75D31 /* TabBar.storyboard */,
-				131B1CBE1DDAE43F002519B5 /* UserProfile.storyboard */,
 				6D2320601DD7659A002401EE /* ViewController */,
 			);
 			path = ShareGroupLocation;
@@ -237,8 +237,8 @@
 			children = (
 				13ECA1F81DE8710600665362 /* CustomCell */,
 				13ECA1FA1DE872EC00665362 /* Groups */,
-				13ECA1FC1DE8735C00665362 /* Login */,
 				13ECA1F91DE8714100665362 /* Map */,
+				13ECA1FC1DE8735C00665362 /* Login */,
 				13ECA1FB1DE8733100665362 /* User */,
 			);
 			name = ViewController;

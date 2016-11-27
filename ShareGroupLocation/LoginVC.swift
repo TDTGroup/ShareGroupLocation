@@ -16,7 +16,7 @@ class LoginVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.hideKeyboardWhenTappedAround() 
+        self.hideKeyboardWhenTappedAround()
     }
     
     @IBAction func onLoginButtonTapped(_ sender: CustomizableButton) {
@@ -39,7 +39,10 @@ class LoginVC: UIViewController {
         }
         
         AuthService().logIn(email: finalEmail, password: password) {(error: Error?) in
-            self.displayErrorMessage(messageText: error!.localizedDescription)
+            if error != nil {
+                print("HAS ERROR HERE")
+                self.displayErrorMessage(messageText: error!.localizedDescription)
+            }
         }
     }
 }

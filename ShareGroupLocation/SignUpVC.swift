@@ -85,22 +85,18 @@ class SignUpVC: UIViewController {
         let resizedPicture = self.ResizeImage(image: userImageView.image!, targetSize: CGSize(width: 200.0, height: 200.0))
         let pictureData = UIImageJPEGRepresentation(resizedPicture, 0.70)
         
-        AuthService().signUp(email: finalEmail,
+        // Register Auth user -> upload profile pic to storage -> create user record in DB -> sign user in
+        excuteSignUpUserFlow(email: finalEmail,
                              password: password,
                              userName: usernameTextField.text!,
                              mobileNumber: mobileNumberTextField.text!,
                              pictureData: pictureData as NSData!) {(error: Error?) in
-                                self.displayErrorMessage(messageText: error!.localizedDescription)
+                                
+                                if error != nil {
+                                    print("HAS ERROR HERE")
+                                    self.displayErrorMessage(messageText: error!.localizedDescription)
+                                }
         }
-        
-//        // Register Auth user -> upload profile pic to storage -> create user record in DB -> sign user in
-//        excuteSignUpUserFlow(email: finalEmail,
-//                             password: password,
-//                             userName: usernameTextField.text!,
-//                             mobileNumber: mobileNumberTextField.text!,
-//                             pictureData: pictureData as NSData!) {(error: Error?) in
-//                                self.displayErrorMessage(messageText: error!.localizedDescription)
-//        }
     }
 }
 
@@ -130,48 +126,54 @@ extension SignUpVC {
                               completion: @escaping (Error?) -> Void) {
         var authUser: FIRUser!
         
-        // 1 Signup user
-        AuthService().signUp2(email: email,
-                              password: password,
-                              userName: userName) {(user: FIRUser?, signUpError: Error?) in
-                                if signUpError != nil {
-                                    print(signUpError!.localizedDescription)
-                                    completion(signUpError)
-                                    return
+        // 1 - Signup user
+        print("1 ------ BEGIN OF: -- signUp")
+        AuthService().signUp(email: email, password: password, userName: userName, completion: {(user: FIRUser?, signUpError: Error?) in
+            if signUpError != nil {
+                print(signUpError!.localizedDescription)
+                return completion(signUpError)
+            }
+            
+            if user != nil {
+                authUser = user!
+                
+                // 2 - Set Auth user info if no error
+                print("2 ------ BEGIN OF: -- setUserInfo")
+                StorageService().setUserInfo(user: authUser, userName: userName, pictureData: pictureData){
+                    (setUser: FIRUser?, setUserInfoError: Error?) in
+                    if setUserInfoError != nil {
+                        print(setUserInfoError!.localizedDescription)
+                        return completion(setUserInfoError)
+                    }
+                    
+                    if setUser != nil {
+                        // Auth user now has photoURL from storage
+                        authUser = setUser
+                        
+                        // 3 - Save user info to Firebase DB if no error
+                        print("3 ------ BEGIN OF: -- saveUserInfo")
+                        DataService().saveUserInfo(user: authUser, mobileNumber: mobileNumber) {(saveUserInfoError: Error?) in
+                            if saveUserInfoError != nil {
+                                print(saveUserInfoError!.localizedDescription)
+                                completion(saveUserInfoError)
+                            }
+                            
+                            // 4 - Log user in if no error
+                            print("4 ------ BEGIN OF: -- logIn")
+                            AuthService().logIn(email: (authUser?.email!)!, password: password) {(loginError: Error?) in
+                                if loginError != nil {
+                                    print(loginError!.localizedDescription)
+                                    completion(loginError)
                                 }
-                                authUser = user!
-        }
-        
-        // 2 - Set Auth user info if no error
-        StorageService().setUserInfo2(user: authUser, userName: userName, pictureData: pictureData){
-            (user: FIRUser?, setUserInfoError: Error?) in
-            if setUserInfoError != nil {
-                print(setUserInfoError!.localizedDescription)
-                completion(setUserInfoError)
-                return
+                            }
+                            print("4 ------ END OF: -- logIn")
+                        }
+                    }
+                    print("3 ------ END OF: -- saveUserInfo")
+                }
+                print("2 ------ END OF: -- setUserInfo")
             }
-            // Auth user now has photoURL from storage
-            authUser = user!
-        }
-        
-        // 3 - Save user info to Firebase DB if no error
-        DataService().saveUserInfo2(user: authUser, mobileNumber: mobileNumber) {(saveUserInfoError: Error?) in
-            if saveUserInfoError != nil {
-                print(saveUserInfoError!.localizedDescription)
-                completion(saveUserInfoError)
-                return
-            }
-        }
-        
-        // 4 - Log user in if no error
-        AuthService().logIn(email: (authUser?.email!)!, password: password) {(loginError: Error?) in
-            if loginError != nil {
-                print(loginError!.localizedDescription)
-                completion(loginError)
-                return
-            }
-        }
+        })
+        print("1 ------ END OF: -- signUp")
     }
-    
-    
 }

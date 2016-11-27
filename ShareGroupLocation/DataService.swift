@@ -50,26 +50,7 @@ struct DataService {
     }
     
     // 3 - Add User Info to Firebase Database, then log in
-    func saveUserInfo(user: FIRUser!, password: String, userName: String, mobileNumber: String,
-                      completion: @escaping (Error?) -> Void){
-        
-        let userInfo = [USER_NAME: userName as AnyObject,
-                        USER_EMAIL: user.email as AnyObject,
-                        USER_MOBILE_NUMBER: mobileNumber as AnyObject,
-                        USER_PIC_URL: String(describing: user.photoURL!) as AnyObject]
-        
-        REF_USERS.child(user.uid).setValue(userInfo) { (error, ref) in
-            if error != nil {
-                print(error!.localizedDescription)
-                completion(error)
-                return
-            }
-            print("User info saved successfully")
-        }
-    }
-    
-    // 3 - Add User Info to Firebase Database, then log in
-    func saveUserInfo2(user: FIRUser!, mobileNumber: String,
+    func saveUserInfo(user: FIRUser!, mobileNumber: String,
                        completion: @escaping (Error?) -> Void){
         
         let userInfo = [USER_NAME: user.displayName as AnyObject,
@@ -77,13 +58,14 @@ struct DataService {
                         USER_MOBILE_NUMBER: mobileNumber as AnyObject,
                         USER_PIC_URL: String(describing: user.photoURL!) as AnyObject]
         
+        print("3.1 ------ BEGIN OF: -- setValue")
         REF_USERS.child(user.uid).setValue(userInfo) { (error, ref) in
             if error != nil {
                 print(error!.localizedDescription)
                 completion(error)
-                return
             }
-            print("User info saved successfully")
+            completion(nil)
         }
+        print("3.1 ------ END OF: -- setValue")
     }
 }
