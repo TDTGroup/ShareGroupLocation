@@ -10,25 +10,19 @@ import UIKit
 import GoogleMaps
 import GooglePlaces
 import AFNetworking
-
-class Member {
-    var name:String
-    var lat:CLLocationDegrees = 0.0
-    var long:CLLocationDegrees = 0.0
-    
-    init(name:String, lat:CLLocationDegrees, long:CLLocationDegrees) {
-        self.lat = lat
-        self.long = long
-        self.name = name
-    }
-}
+import Firebase
+import FirebaseDatabase
 
 class MapViewController: UIViewController {
     
     @IBOutlet weak var mapView: UIView!
     @IBOutlet weak var memberCollectionView: UICollectionView!
     
-    var memberLocationArray:[Member] = [Member]()
+    
+    var groupKey = "111"
+    var memberLocationArray = [User]()
+    
+    
     
     var map:GMSMapView!
     var visibleRegion:GMSVisibleRegion!
@@ -39,10 +33,10 @@ class MapViewController: UIViewController {
     var markerArray:[GMSMarker] = []
     var suggestedPlaces:[GMSMarker] = []
     var polylineArray:[GMSPolyline] = []
-    
-    var currentZoom:Float = 15
-    
     var destinationMarker = GMSMarker()
+    
+    var isGettingDirection = false
+    var currentZoom:Float = 15
     
     var colorArray:[UIColor] = [UIColor(colorLiteralRed: 255, green: 99, blue: 99, alpha: 1),
                                 UIColor(colorLiteralRed: 99, green: 255, blue: 99, alpha: 1),
@@ -70,6 +64,12 @@ class MapViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         
+        // Provide API Key
+        GMSPlacesClient.provideAPIKey("AIzaSyCTSY4bjXkhCD92Bw-yIT9boj4EnXl9Z74")
+        GMSServices.provideAPIKey("AIzaSyCTSY4bjXkhCD92Bw-yIT9boj4EnXl9Z74")
+        
+        placesClient = GMSPlacesClient.shared()
+        
         memberCollectionView.delegate = self
         memberCollectionView.dataSource = self
         
@@ -81,20 +81,6 @@ class MapViewController: UIViewController {
         self.locationManager.allowsBackgroundLocationUpdates = true
         self.locationManager.allowDeferredLocationUpdates(untilTraveled: 50, timeout: 30)
         self.locationManager.startUpdatingLocation()
-        
-        // TO DELETE:
-        memberLocationArray.append(Member(name: "Duy", lat: 10.7811852, long: 106.6677919))
-        memberLocationArray.append(Member(name: "Thức", lat: 10.7551872, long: 106.6997939))
-        memberLocationArray.append(Member(name: "Khánh", lat: 10.7771892, long: 106.6557949))
-        memberLocationArray.append(Member(name: "Trung", lat: 10.7991832, long: 106.6337959))
-        memberLocationArray.append(Member(name: "Thanh", lat: 10.8991832, long: 106.7337959))
-        memberLocationArray.append(Member(name: "Huỳnh", lat: 10.9991832, long: 106.8337959))
-        
-        // Provide API Key
-        GMSPlacesClient.provideAPIKey("AIzaSyCTSY4bjXkhCD92Bw-yIT9boj4EnXl9Z74")
-        GMSServices.provideAPIKey("AIzaSyCTSY4bjXkhCD92Bw-yIT9boj4EnXl9Z74")
-        
-        placesClient = GMSPlacesClient.shared()
         
         // Implement Map
         let width = self.view.frame.width
@@ -116,16 +102,9 @@ class MapViewController: UIViewController {
         // Move my location button
         map.padding = UIEdgeInsetsMake(0, 0, 100, 0)
         
-        var i = 0
-        for item in memberLocationArray {
-            viewMarker(latitude: item.lat, longtitude: item.long, title: String(item.name), map: map, memberIndex: i)
-            getDirection(latSource: Float((locationManager.location?.coordinate.latitude)!), longSource: Float((locationManager.location?.coordinate.longitude)!), latDes: Float(item.lat), longDes: Float(item.long), memberIndex: i)
-            i += 1
-        }
+        getAndDrawAllMembers(groupKey: groupKey)
         
-        zoomToFit()
-        
-        
+        //listenChangeLocation(groupKey: groupKey)
     }
 
     override func didReceiveMemoryWarning() {
@@ -147,7 +126,35 @@ class MapViewController: UIViewController {
     @IBAction func onShowAllMarkers(_ sender: UIButton) {
         zoomToFit()
     }
-    
+
+    func getAndDrawAllMembers(groupKey:String) {
+        let userRef = DataService().REF_USERS.queryOrdered(byChild: "groups/111").queryEqual(toValue: "TRUE")
+        
+        userRef.observeSingleEvent(of: .value) { (snapshot: FIRDataSnapshot) in
+            for child in snapshot.children {
+                if let child = child as? FIRDataSnapshot {
+                    let user = User(snapshot: child)
+                    
+                    self.memberLocationArray.append(user)
+                }
+                
+            }
+            
+            var i = 0
+            for item in self.memberLocationArray {
+                
+                let lat = item.location.components(separatedBy: ",")[0]
+                let long = item.location.components(separatedBy: ",")[1]
+                
+                self.viewMarker(latitude: CLLocationDegrees(lat)!, longtitude: CLLocationDegrees(long)!, title: String(item.userName), map: self.map, memberIndex: i)
+                self.getDirection(latSource: Float((self.locationManager.location?.coordinate.latitude)!), longSource: Float((self.locationManager.location?.coordinate.longitude)!), latDes: Float(lat)!, longDes: Float(long)!, memberIndex: i)
+                i += 1
+            }
+            
+            self.zoomToFit()
+            self.memberCollectionView.reloadData()
+        }
+    }
     
     func zoomToFit() {
         self.path.removeAllCoordinates()
@@ -160,6 +167,8 @@ class MapViewController: UIViewController {
     }
     
     func getDirection(latSource:Float, longSource:Float, latDes:Float, longDes:Float, memberIndex:Int) {
+        isGettingDirection = true
+        
         let urlString = "http://maps.googleapis.com/maps/api/directions/json?origin=\(latSource),\(longSource)&destination=\(latDes),\(longDes)&mode=driving"
         let request = URLRequest(url: URL(string: urlString)!)
         let path = GMSMutablePath()
@@ -210,6 +219,8 @@ class MapViewController: UIViewController {
             else {
                 print("Get Direction Error!")
             }
+            
+            self.isGettingDirection = false
         }
         task.resume()
     }
@@ -220,7 +231,12 @@ class MapViewController: UIViewController {
         marker.snippet = "Lat:\(latitude), Long:\(longtitude)"
         marker.appearAnimation = kGMSMarkerAnimationPop
         let iconView = UIImageView(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
-        iconView.image = UIImage(named: "imageSample")
+        iconView.image = UIImage(named: "default_user")
+        
+        if memberLocationArray[memberIndex].profilePicUrl != "" {
+            iconView.setImageWith(URL(string: memberLocationArray[memberIndex].profilePicUrl)!)
+        }
+        
         iconView.layer.masksToBounds = true
         iconView.layer.cornerRadius = 15
         marker.iconView = iconView
@@ -284,19 +300,8 @@ class MapViewController: UIViewController {
         viewNearByPlaces(latitude: map.camera.target.latitude, longtitude: map.camera.target.longitude)
     }
     
-    @IBAction func onClear(_ sender: UIButton) {
-        if polylineArray.count > 0 {
-            for i in 0...polylineArray.count - 1 {
-                polylineArray[i].map = nil
-            }
-            polylineArray.removeAll()
-        }
-        if suggestedPlaces.count > 0 {
-            for i in 0...suggestedPlaces.count - 1 {
-                suggestedPlaces[i].map = nil
-            }
-            suggestedPlaces.removeAll()
-        }
+    @IBAction func onDismiss(_ sender: UIButton) {
+        dismiss(animated: true, completion: nil)
     }
     
 }
@@ -304,8 +309,6 @@ class MapViewController: UIViewController {
 extension MapViewController: GMSMapViewDelegate, CLLocationManagerDelegate {
     func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
         //print(position)
-        
-        
     }
     
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
@@ -315,6 +318,10 @@ extension MapViewController: GMSMapViewDelegate, CLLocationManagerDelegate {
     
     func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
         print("Long press on x \(coordinate.latitude) and y \(coordinate.longitude)")
+        
+        if isGettingDirection {
+            return
+        }
         
         if polylineArray.count > 0 {
             for i in 0...polylineArray.count - 1 {
@@ -343,7 +350,11 @@ extension MapViewController: GMSMapViewDelegate, CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        
+    }
+    
+    func didTapMyLocationButton(for mapView: GMSMapView) -> Bool {
+        map.animate(toZoom: currentZoom)
+        return false
     }
 }
 
@@ -355,8 +366,11 @@ extension MapViewController: UICollectionViewDelegate, UICollectionViewDataSourc
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = memberCollectionView.dequeueReusableCell(withReuseIdentifier: "MemberCollectionViewCell", for: indexPath) as! MemberCollectionViewCell
         
-        cell.imageView.image = UIImage(named: "imageSample")
-        cell.nameLabel.text = memberLocationArray[indexPath.row].name
+        if memberLocationArray[indexPath.row].profilePicUrl != "" {
+            cell.imageView.setImageWith(URL(string: memberLocationArray[indexPath.row].profilePicUrl)!)
+        }
+        
+        cell.nameLabel.text = memberLocationArray[indexPath.row].userName
         cell.tag = indexPath.row
         
         return cell
@@ -364,6 +378,10 @@ extension MapViewController: UICollectionViewDelegate, UICollectionViewDataSourc
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         map.selectedMarker = markerArray[indexPath.row]
-        moveCamera(location: CLLocation(latitude: self.memberLocationArray[indexPath.row].lat, longitude: self.memberLocationArray[indexPath.row].long))
+        
+        let lat = self.memberLocationArray[indexPath.row].location.components(separatedBy: ",")[0]
+        let long = self.memberLocationArray[indexPath.row].location.components(separatedBy: ",")[1]
+        
+        moveCamera(location: CLLocation(latitude: CLLocationDegrees(lat)!, longitude: CLLocationDegrees(long)!))
     }
 }
