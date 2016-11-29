@@ -116,4 +116,35 @@ class User {
         let childUpdate = ["\(userKey)": self.dictData]
         usersNodeRef.updateChildValues(childUpdate)
     }
+    
+    init(snapshot: FIRDataSnapshot){
+        self.userKey = snapshot.key
+        
+        let dict = snapshot.value as? Dictionary<String, AnyObject>
+        
+        if let userName = dict![USER_NAME] as? String {
+            self.userName = userName
+        }
+        
+        if let email = dict![USER_EMAIL] as? String {
+            self.email = email
+        }
+        if let mobileNumber = dict![USER_MOBILE_NUMBER] as? String {
+            self.mobileNumber = mobileNumber
+        }
+        
+        if let profilePicUrl = dict![USER_PIC_URL] as? String {
+            self.profilePicUrl = profilePicUrl
+        }
+        
+        if let location = dict![USER_LOCATION] as? String {
+            self.location = location
+        }
+        
+        if let groups = dict![USER_GROUPS] as? [String] {
+            self.groups = groups
+        }
+        
+        _userRef = DataService.ds.REF_USERS.child(userKey)
+    }
 }
