@@ -10,16 +10,19 @@ import UIKit
 import FBSDKCoreKit
 import Firebase
 import GoogleSignIn
+import Contacts
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
+    var contactStore = CNContactStore()
     
     override init() {
         super.init()
         // Use Firebase library to configure APIs
         FIRApp.configure()
+        
     }
     
     func login() {
@@ -93,7 +96,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
+    
+    static func getAppDelegate() -> AppDelegate {
+        return UIApplication.shared.delegate as! AppDelegate
+    }
 }
+
 
 
 extension AppDelegate: GIDSignInDelegate {

@@ -21,4 +21,5 @@ target 'ShareGroupLocation' do
   pod 'GooglePlacePicker'
   pod 'GoogleMaps'
 
+  pod 'MBProgressHUD'
 end

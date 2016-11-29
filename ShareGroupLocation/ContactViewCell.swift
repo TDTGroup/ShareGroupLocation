@@ -10,6 +10,8 @@ import UIKit
 
 class ContactViewCell: UITableViewCell {
 
+    @IBOutlet weak var avatarImg: UIImageView!
+    @IBOutlet weak var nameLabel: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
