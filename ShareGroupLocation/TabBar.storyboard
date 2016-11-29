@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="tPC-bM-PWX">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11761" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="tPC-bM-PWX">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -22,8 +22,6 @@
                         <segue destination="VmU-ID-5Fj" kind="relationship" relationship="viewControllers" id="0r7-4Y-hfu"/>
                         <segue destination="vjc-hs-hmx" kind="relationship" relationship="viewControllers" id="bFZ-bA-Uyk"/>
                         <segue destination="8qX-0j-Qd4" kind="relationship" relationship="viewControllers" id="Xvt-cb-oyT"/>
-                        <segue destination="QfW-m4-CrD" kind="relationship" relationship="viewControllers" id="eN2-mP-cpN"/>
-                        <segue destination="HVX-yq-bPH" kind="relationship" relationship="viewControllers" id="8it-Fc-FMH"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UKD-gU-4Xp" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -127,38 +125,9 @@
             </objects>
             <point key="canvasLocation" x="102" y="937"/>
         </scene>
-        <!--UserProfile-->
-        <scene sceneID="8eE-6M-IvQ">
-            <objects>
-                <viewControllerPlaceholder storyboardName="UserProfile" id="QfW-m4-CrD" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="9qN-Kr-Qxd"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="u32-mY-xqa" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-263" y="1354"/>
-        </scene>
-        <!--Item-->
-        <scene sceneID="ijB-bC-TzC">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="HVX-yq-bPH" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="glK-Gc-ut0"/>
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="AUO-4L-TFm">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="Nrx-la-uwW" kind="relationship" relationship="rootViewController" id="0Zw-Sr-CG9"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="u5H-zZ-8KT" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="102" y="-1021"/>
-        </scene>
     </scenes>
     <resources>
-        <image name="chat" width="50" height="50"/>
+        <image name="chat" width="30" height="30"/>
         <image name="groups" width="30" height="30"/>
         <image name="user" width="30" height="30"/>
     </resources>

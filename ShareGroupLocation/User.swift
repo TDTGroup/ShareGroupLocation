@@ -27,14 +27,14 @@ class User {
     private(set) var email: String!
     private(set) var mobileNumber: String!
     private(set) var profilePicUrl: String!
-    private(set) var location: String!
+    private(set) var location: NSDictionary!
     private(set) var location_lat: String!
     private(set) var location_long: String!
-    private(set) var groups: [String]!
+    private(set) var groups: [String:String]!
     
     var dictData: [String:AnyObject]!
     
-    init(userName: String?, email: String?, mobileNumber: String?, profilePicUrl: String?, location: String?, groups: [String]?) {
+    init(userName: String?, email: String?, mobileNumber: String?, profilePicUrl: String?, location: NSDictionary?, groups: [String:String]?) {
         
         self.dictData = [String:AnyObject]()
         
@@ -89,11 +89,11 @@ class User {
             self.profilePicUrl = profilePicUrl
         }
         
-        if let location = userData[USER_LOCATION] as? String {
+        if let location = userData[USER_LOCATION] as? NSDictionary {
             self.location = location
         }
         
-        if let groups = userData[USER_GROUPS] as? [String] {
+        if let groups = userData[USER_GROUPS] as? [String:String] {
             self.groups = groups
         }
         
@@ -141,19 +141,13 @@ class User {
             self.profilePicUrl = profilePicUrl
         }
         
-        if let location = dict![USER_LOCATION] as? String {
+        if let location = dict![USER_LOCATION] as? NSDictionary {
             self.location = location
+            self.location_lat = location["lat"] as! String
+            self.location_long = location["long"] as! String
         }
         
-        if let location_lat = dict![USER_LOCATION_LAT] as? String {
-            self.location_lat = location_lat
-        }
-        
-        if let location_long = dict![USER_LOCATION_LONG] as? String {
-            self.location_long = location_long
-        }
-        
-        if let groups = dict![USER_GROUPS] as? [String] {
+        if let groups = dict![USER_GROUPS] as? [String:String] {
             self.groups = groups
         }
         

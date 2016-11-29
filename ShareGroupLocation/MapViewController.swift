@@ -143,11 +143,8 @@ class MapViewController: UIViewController {
             var i = 0
             for item in self.memberLocationArray {
                 
-                let lat = item.location.components(separatedBy: ",")[0]
-                let long = item.location.components(separatedBy: ",")[1]
-                
-                self.viewMarker(latitude: CLLocationDegrees(lat)!, longtitude: CLLocationDegrees(long)!, title: String(item.userName), map: self.map, memberIndex: i)
-                self.getDirection(latSource: Float((self.locationManager.location?.coordinate.latitude)!), longSource: Float((self.locationManager.location?.coordinate.longitude)!), latDes: Float(lat)!, longDes: Float(long)!, memberIndex: i)
+                self.viewMarker(latitude: CLLocationDegrees(item.location_lat)!, longtitude: CLLocationDegrees(item.location_long)!, title: String(item.userName), map: self.map, memberIndex: i)
+                self.getDirection(latSource: Float((self.locationManager.location?.coordinate.latitude)!), longSource: Float((self.locationManager.location?.coordinate.longitude)!), latDes: Float(item.location_lat)!, longDes: Float(item.location_long)!, memberIndex: i)
                 i += 1
             }
             
@@ -379,9 +376,6 @@ extension MapViewController: UICollectionViewDelegate, UICollectionViewDataSourc
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         map.selectedMarker = markerArray[indexPath.row]
         
-        let lat = self.memberLocationArray[indexPath.row].location.components(separatedBy: ",")[0]
-        let long = self.memberLocationArray[indexPath.row].location.components(separatedBy: ",")[1]
-        
-        moveCamera(location: CLLocation(latitude: CLLocationDegrees(lat)!, longitude: CLLocationDegrees(long)!))
+        moveCamera(location: CLLocation(latitude: CLLocationDegrees(self.memberLocationArray[indexPath.row].location_lat)!, longitude: CLLocationDegrees(self.memberLocationArray[indexPath.row].location_long)!))
     }
 }

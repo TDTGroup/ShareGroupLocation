@@ -120,13 +120,13 @@ class UserProfileViewController: UIViewController {
     
     // which will set up the JSON in firebase and set values for the comment, the user who posted it, and post id its for.
     func postToFirebase() {
-        
+        let airports = ["lat": "12", "long": "13"]
         let newUser = User(userName: "name",
                            email: emailTextfield.text,
                            mobileNumber: mobileNumberTextfield.text,
                            profilePicUrl: "link here",
-                           location: "111-333",
-                           groups: [groupTextfield.text!, "001", "002"])
+                           location: airports as NSDictionary?,
+                           groups: [groupTextfield.text!:"TRUE", "001":"TRUE", "002":"TRUE"])
         newUser.addToDatabase()
         
         // resetting the inputs for next user
