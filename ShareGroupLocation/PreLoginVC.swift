@@ -58,11 +58,8 @@ class PreLoginVC: UIViewController {
                 guard let uid = user?.uid else { return }
                 print("Firebase Logged IN with FB account: \(uid)")
                 AuthUser.currentAuthUser = AuthUser(authUserData: user!)
-                
-                // Create an instance of the storyboard's initial view controller.
-                let userProfileVC:UIViewController = UIStoryboard(name: "TabBar", bundle: nil).instantiateViewController(withIdentifier: "TabBarController")
-                // Display the new view controller.
-                self.present(userProfileVC, animated: true, completion: nil)
+                let appDelegate = UIApplication.shared.delegate as! AppDelegate
+                appDelegate.login()
             })
             
             FBSDKGraphRequest(
@@ -70,6 +67,7 @@ class PreLoginVC: UIViewController {
                 parameters: ["fields" : "id, name, email, first_name, last_name, picture.type(large)"]).start(completionHandler: { (connection, result, error) in
                     if error != nil {
                         print("Failed to start graph request: \(error)")
+                        //self.displayErrorMessage(messageText: error!.localizedDescription)
                         return
                     }
                     print(result!)
