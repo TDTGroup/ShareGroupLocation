@@ -14,6 +14,8 @@ let USER_EMAIL = "email"
 let USER_MOBILE_NUMBER = "mobile-number"
 let USER_PIC_URL = "profile-pic"
 let USER_LOCATION = "location"
+let USER_LOCATION_LONG = "location/long"
+let USER_LOCATION_LAT = "location/lat"
 let USER_GROUPS = "groups"
 
 class User {
@@ -26,6 +28,8 @@ class User {
     private(set) var mobileNumber: String!
     private(set) var profilePicUrl: String!
     private(set) var location: String!
+    private(set) var location_lat: String!
+    private(set) var location_long: String!
     private(set) var groups: [String]!
     
     var dictData: [String:AnyObject]!
@@ -139,6 +143,14 @@ class User {
         
         if let location = dict![USER_LOCATION] as? String {
             self.location = location
+        }
+        
+        if let location_lat = dict![USER_LOCATION_LAT] as? String {
+            self.location_lat = location_lat
+        }
+        
+        if let location_long = dict![USER_LOCATION_LONG] as? String {
+            self.location_long = location_long
         }
         
         if let groups = dict![USER_GROUPS] as? [String] {
