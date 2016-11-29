@@ -60,7 +60,7 @@ class PreLoginVC: UIViewController {
                 AuthUser.currentAuthUser = AuthUser(authUserData: user!)
                 
                 // Create an instance of the storyboard's initial view controller.
-                let userProfileVC:UIViewController = UIStoryboard(name: "UserProfile", bundle: nil).instantiateViewController(withIdentifier: "UserProfileVC")
+                let userProfileVC:UIViewController = UIStoryboard(name: "TabBar", bundle: nil).instantiateViewController(withIdentifier: "TabBarController")
                 // Display the new view controller.
                 self.present(userProfileVC, animated: true, completion: nil)
             })
