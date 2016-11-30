@@ -22,90 +22,78 @@ class UserProfileVC: UIViewController {
     let pickerController = UIImagePickerController()
     
     override func viewWillAppear(_ animated: Bool) {
-        if (AuthUser.currentAuthUser != nil){ //FIRAuth.auth()?.currentUser == nil) {
+        if (AuthUser.currentAuthUser != nil){
             print("HAS CURRENT USER \(AuthUser.currentAuthUser?.uid)")
-            return
             
+            //UserController().getUsers()
+            //UserController().getUserByGroupID(groupID: "222")
+            //            let groups = GroupController().getGroupByUserID2(userID: FIRAuth.auth()!.currentUser!.uid)
+            //            print("AFTER GET GROUPS: group count: \(groups.count)")
+            //
+            //GroupController().getGroupByUserID(userID: FIRAuth.auth()!.currentUser!.uid)
+            
+            //UserController().checkContactExist(mobileNumber: "111111")
+            
+            //UserController().setObserveUserLocation()
+            
+            // for location test: BEGIN
+            userLocationRef = DataService().REF_USERS.child("\(getCurrentUserUid())/\(USER_LOCATION)")
+            // set observe everytime view appear (while viewdidload only excutes once)
+            setObserveUserLocation()
+            // for location test: END
+            
+            return
         }
         
-        //            let alertControler = UIAlertController(title: "Oops!", message: "HAS NO CURRENT USER", preferredStyle: .alert)
-        //            let defaultAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
-        //            alertControler.addAction(defaultAction)
-        //            self.present(alertControler, animated: true, completion: nil)
         print("HAS NO CURRENT USER")
         signOutOverride()
-        
-        
-        //        DispatchQueue.main.async {
-        //            DispatchQueue.main.async(execute: { () -> Void in
-        //
-        //                let viewController:UIViewController = UIStoryboard(name: "Login", bundle: nil).instantiateViewController(withIdentifier: "LoginVC")
-        //                self.present(viewController, animated: true, completion: nil)
-        //            })
-        //        }
-    }
-    
-    func getUser() {
-        
-        var users = [User]()
-        
-        var userRef = DataService().REF_USERS
-        
-        userRef.observe(.value) { (snapshot: FIRDataSnapshot) in
-            //            for child in snapshot.children {
-            //
-            //                let newUser = User(snapshot: child as! FIRDataSnapshot)
-            //                users.append(newUser)
-            //                print(newUser.email)
-            //
-            //                let snapshotChild = child as! FIRDataSnapshot
-            //                let childRef = snapshotChild.ref
-            //
-            //                print("get group")
-            //                childRef.child("groups").observe(.value) {(childSnapshot: FIRDataSnapshot) in
-            //                    let childData = childSnapshot.value as? Dictionary<String, AnyObject>
-            //                    print(childData)
-            //                }
-            //            }
-            //            print(users.count)
-            
-            print("get group count")
-            userRef.queryOrdered(byChild: "groups/111").queryEqual(toValue: "TRUE").observe(.value) {(childSnapshot: FIRDataSnapshot) in
-                if let childData = childSnapshot.value as? Dictionary<String, AnyObject>{
-                    print("---- group count: \(childData.count)")
-                    //print(childData)
-                } else {
-                    print("group count nil")
-                }
-            }
-        }
-    }
-    
-    func getGroupByCurrentUser(){
-        var groupRef = DataService().REF_GROUPS
-        
-        
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.hideKeyboardWhenTappedAround()
-        getUser()
+        //getGroupByCurrentUser()
     }
     
+    // === TRUNG: BEGIN =============================
+    
+    var userLocationRef: FIRDatabaseReference!
+    
+//    override func viewWillAppear(_ animated: Bool) {
+//        userLocationRef = DataService().REF_USERS.child("\(getCurrentUserUid())/\(USER_LOCATION)")
+//        // set observe everytime view appear (while viewdidload only excutes once)
+//        setObserveUserLocation()
+//    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        // remove listener when view not appear
+        userLocationRef.removeAllObservers()
+    }
+    
+    // set observe for user location
+    func setObserveUserLocation() {
+        userLocationRef
+            .observe(.value) {(locationSnapshot: FIRDataSnapshot) in
+                if locationSnapshot.childrenCount > 0 {
+                    let newLocation = Location(snapshot: locationSnapshot)
+                    print("---- user location: lat: \(newLocation.location_Latitude) -  long: \(newLocation.location_Longitude)")
+                    print(locationSnapshot)
+                } else {
+                    print("location nil")
+                }
+        }
+    }
+    
+    // === TRUNG: END =============================
+    
     @IBAction func onLogOutButtonTapped(_ sender: Any) {
-        //        try! FIRAuth.auth()?.signOut()
-        //        GIDSignIn.sharedInstance().signOut()
-        //        FBSDKLoginManager().logOut()
         AuthUser.currentAuthUser = nil
         signOutOverride()
     }
     
     @IBAction func onImageViewTapGesture(_ sender: UITapGestureRecognizer) {
         print("open image picker")
-        
-        //let pickerController = UIImagePickerController()
-        //pickerController.delegate = self
+        pickerController.delegate = self
         pickerController.allowsEditing = false
         let alertController = UIAlertController(title: "Add profile picture", message: "Choose from", preferredStyle: .actionSheet)
         
@@ -153,4 +141,8 @@ extension UserProfileVC: UIImagePickerControllerDelegate {
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         self.dismiss(animated: true, completion: nil)
     }
+}
+
+extension UserProfileVC: UINavigationControllerDelegate {
+    
 }

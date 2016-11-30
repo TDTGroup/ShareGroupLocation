@@ -86,4 +86,9 @@ extension UIViewController {
         
         return newImage!
     }
+    
+    // Get Firebase Auth uid
+    func getCurrentUserUid() -> String {
+        return (FIRAuth.auth()?.currentUser?.uid)!
+    }
 }

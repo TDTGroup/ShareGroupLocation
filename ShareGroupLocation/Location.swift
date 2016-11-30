@@ -12,8 +12,8 @@ import FirebaseDatabase
 let LOC_USERS = "users"
 let LOC_GROUPS = "groups"
 
-let LOC_LATITUDE = "latitude"
-let LOC_LONGTITUDE = "longitude"
+let LOC_LATITUDE = "lat"
+let LOC_LONGTITUDE = "long"
 
 class Location {
     private var _locationRef: FIRDatabaseReference!
@@ -40,6 +40,22 @@ class Location {
         
         if let longitude = userData[LOC_LONGTITUDE] as? String {
             self.location_Longitude = longitude
+        }
+        
+        _locationRef = DataService.ds.REF_LOCATIONS.child(locationKey)
+    }
+    
+    init(snapshot: FIRDataSnapshot){
+        self.locationKey = snapshot.key
+        
+        let dict = snapshot.value as? Dictionary<String, AnyObject>
+        
+        if let location_Latitude = dict![LOC_LATITUDE] as? String {
+            self.location_Latitude = location_Latitude
+        }
+        
+        if let location_Longitude = dict![LOC_LONGTITUDE] as? String {
+            self.location_Longitude = location_Longitude
         }
         
         _locationRef = DataService.ds.REF_LOCATIONS.child(locationKey)

@@ -127,7 +127,7 @@ class UserProfileViewController: UIViewController {
                            profilePicUrl: "link here",
                            location: airports as NSDictionary?,
                            groups: [groupTextfield.text!:"TRUE", "001":"TRUE", "002":"TRUE"])
-        newUser.addToDatabase()
+        UserController().addToDatabase(user: newUser)
         
         // resetting the inputs for next user
         emailTextfield.text = ""

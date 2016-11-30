@@ -31,6 +31,8 @@
 		1333E1FC1DDC0EFF00E2CC10 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1333E1F91DDC0EFF00E2CC10 /* User.swift */; };
 		1333E1FE1DDC0F1000E2CC10 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1333E1FD1DDC0F1000E2CC10 /* DataService.swift */; };
 		136255F31DE538C700DFF0B8 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 136255F21DE538C700DFF0B8 /* AuthService.swift */; };
+		13662CBE1DEE12CE00A83819 /* UserController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13662CBD1DEE12CE00A83819 /* UserController.swift */; };
+		13662CC01DEE13CC00A83819 /* GroupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13662CBF1DEE13CC00A83819 /* GroupController.swift */; };
 		1386787F1DDA9C2500CCBDBB /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1386787E1DDA9C2500CCBDBB /* Login.storyboard */; };
 		139A65011DE8677B00E82614 /* ContactViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 139A64FF1DE8677B00E82614 /* ContactViewCell.swift */; };
 		139A65021DE8677B00E82614 /* GroupViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 139A65001DE8677B00E82614 /* GroupViewCell.swift */; };
@@ -73,6 +75,8 @@
 		1333E1F91DDC0EFF00E2CC10 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		1333E1FD1DDC0F1000E2CC10 /* DataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
 		136255F21DE538C700DFF0B8 /* AuthService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		13662CBD1DEE12CE00A83819 /* UserController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserController.swift; sourceTree = "<group>"; };
+		13662CBF1DEE13CC00A83819 /* GroupController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupController.swift; sourceTree = "<group>"; };
 		1386787E1DDA9C2500CCBDBB /* Login.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
 		138678821DDAA51600CCBDBB /* ShareGroupLocation.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShareGroupLocation.entitlements; sourceTree = "<group>"; };
 		139A64FF1DE8677B00E82614 /* ContactViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactViewCell.swift; sourceTree = "<group>"; };
@@ -116,6 +120,15 @@
 				133375231DE7CE9C00FA985A /* HelpVC.swift */,
 			);
 			name = CustomizableControl;
+			sourceTree = "<group>";
+		};
+		13662CBC1DEE12B900A83819 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				13662CBD1DEE12CE00A83819 /* UserController.swift */,
+				13662CBF1DEE13CC00A83819 /* GroupController.swift */,
+			);
+			name = Controller;
 			sourceTree = "<group>";
 		};
 		138678721DDA9B1600CCBDBB /* Service */ = {
@@ -225,8 +238,9 @@
 				1312DF941DE0347B00E70E79 /* Login_Signup.storyboard */,
 				131B1CBE1DDAE43F002519B5 /* UserProfile.storyboard */,
 				1386787E1DDA9C2500CCBDBB /* Login.storyboard */,
-				138678751DDA9B7500CCBDBB /* Model */,
 				138678721DDA9B1600CCBDBB /* Service */,
+				138678751DDA9B7500CCBDBB /* Model */,
+				13662CBC1DEE12B900A83819 /* Controller */,
 				6D2320601DD7659A002401EE /* ViewController */,
 			);
 			path = ShareGroupLocation;
@@ -404,6 +418,7 @@
 				131D0F5D1DE3832500D96679 /* LoginVC.swift in Sources */,
 				1333E1FB1DDC0EFF00E2CC10 /* Group.swift in Sources */,
 				139A65011DE8677B00E82614 /* ContactViewCell.swift in Sources */,
+				13662CBE1DEE12CE00A83819 /* UserController.swift in Sources */,
 				1333E1FC1DDC0EFF00E2CC10 /* User.swift in Sources */,
 				136255F31DE538C700DFF0B8 /* AuthService.swift in Sources */,
 				6D2320511DD71ABC002401EE /* LoginViewController.swift in Sources */,
@@ -419,6 +434,7 @@
 				13FA02C71DE5594A00B90E05 /* Help.swift in Sources */,
 				6D23204F1DD71ABC002401EE /* AppDelegate.swift in Sources */,
 				131D0F5F1DE3854200D96679 /* PreLoginVC.swift in Sources */,
+				13662CC01DEE13CC00A83819 /* GroupController.swift in Sources */,
 				6D2320621DD76641002401EE /* GroupsViewController.swift in Sources */,
 				1333E1FA1DDC0EFF00E2CC10 /* AuthUser.swift in Sources */,
 				131B1CC31DDAFD8D002519B5 /* Message.swift in Sources */,

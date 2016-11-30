@@ -20,6 +20,8 @@ let GROUP_MEETING_TIME = "group-meeting-time"
 let GROUP_MEETING_LOCATION = "group-meeting-location"
 let GROUP_MEETING_MEMBERS = "group-meeting-members"
 
+let GROUP_DUMMY_VALUE = "TRUE"
+
 class Group {
     private var _groupRef: FIRDatabaseReference!
     

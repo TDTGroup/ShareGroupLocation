@@ -301,6 +301,37 @@ class MapViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
+//    // === TRUNG: BEGIN =============================
+//    
+//    var userLocationRef: FIRDatabaseReference!
+//    
+//    override func viewWillAppear(_ animated: Bool) {
+//         userLocationRef = DataService().REF_USERS.child("\(getCurrentUserUid())/\(USER_LOCATION)")
+//        // set observe everytime view appear (while viewdidload only excutes once)
+//        setObserveUserLocation()
+//    }
+//    
+//    override func viewWillDisappear(_ animated: Bool) {
+//        // remove listener when view not appear
+//        userLocationRef.removeAllObservers()
+//    }
+//    
+//    // set observe for user location
+//    func setObserveUserLocation() {
+//        userLocationRef
+//            .observe(.value) {(locationSnapshot: FIRDataSnapshot) in
+//                if locationSnapshot.childrenCount > 0 {
+//                    let newLocation = Location(snapshot: locationSnapshot)
+//                    print("---- user location: lat: \(newLocation.location_Latitude) -  long: \(newLocation.location_Longitude)")
+//                    print(locationSnapshot)
+//                } else {
+//                    print("location nil")
+//                }
+//        }
+//    }
+//    
+//    // === TRUNG: END =============================
+    
 }
 
 extension MapViewController: GMSMapViewDelegate, CLLocationManagerDelegate {

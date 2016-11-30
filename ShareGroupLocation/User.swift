@@ -14,9 +14,11 @@ let USER_EMAIL = "email"
 let USER_MOBILE_NUMBER = "mobile-number"
 let USER_PIC_URL = "profile-pic"
 let USER_LOCATION = "location"
-let USER_LOCATION_LONG = "location/long"
-let USER_LOCATION_LAT = "location/lat"
+let USER_LOCATION_LONG = LOC_LATITUDE
+let USER_LOCATION_LAT = LOC_LONGTITUDE
 let USER_GROUPS = "groups"
+
+let USER_DUMMY_VALUE = "TRUE"
 
 class User {
     private var _userRef: FIRDatabaseReference!
@@ -110,17 +112,6 @@ class User {
         ]
     }
     
-    func addToDatabase() {
-        if self.dictData == nil {
-            return
-        }
-        
-        let usersNodeRef = DataService.ds.REF_USERS
-        let userKey = usersNodeRef.childByAutoId().key
-        let childUpdate = ["\(userKey)": self.dictData]
-        usersNodeRef.updateChildValues(childUpdate)
-    }
-    
     init(snapshot: FIRDataSnapshot){
         self.userKey = snapshot.key
         
@@ -143,8 +134,8 @@ class User {
         
         if let location = dict![USER_LOCATION] as? NSDictionary {
             self.location = location
-            self.location_lat = location["lat"] as! String
-            self.location_long = location["long"] as! String
+            self.location_lat = location[USER_LOCATION_LAT] as! String
+            self.location_long = location[USER_LOCATION_LONG] as! String
         }
         
         if let groups = dict![USER_GROUPS] as? [String:String] {

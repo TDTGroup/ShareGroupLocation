@@ -16,6 +16,7 @@ class GroupsViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     var groupList = [Group]()
+    var groupRef = DataService().REF_GROUPS
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,14 +28,20 @@ class GroupsViewController: UIViewController {
         if let authUser = FIRAuth.auth()?.currentUser {
             print("group view controller: \(authUser.uid)")
             print("\(AuthUser.currentAuthUser?.displayName)")
-            loadListGroup()
+            //loadListGroup()
+            checkExistOf(mobileNumber: "111111")
         }
         
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    override func viewWillAppear(_ animated: Bool) {
+        // set observe to display everytime view appear (while viewdidload only excutes once)
+        setObserveGroupList()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        // remove listener when view not appear
+        groupRef.removeAllObservers()
     }
     
     @IBAction func createGroup(_ sender: AnyObject) {
@@ -42,15 +49,6 @@ class GroupsViewController: UIViewController {
     }
     
     /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destinationViewController.
-     // Pass the selected object to the new view controller.
-     }
-     */
-    
     func loadListGroup() {
         MBProgressHUD.showAdded(to: self.view, animated: true)
         
@@ -68,8 +66,53 @@ class GroupsViewController: UIViewController {
         }) { (error) in
             print(error.localizedDescription)
         }
+    }*/
+    
+    // Get all groups of current user
+    // !!! Currently cannot clear old data of tableview !!!
+    func setObserveGroupList() {
+        var newGroups = [Group]()
+        MBProgressHUD.showAdded(to: self.view, animated: true)
+        
+        DataService().REF_GROUPS.queryOrdered(byChild: "\(GROUP_MEETING_MEMBERS)/\(getCurrentUserUid())")
+            .queryEqual(toValue: GROUP_DUMMY_VALUE) // dummy value: "TRUE"
+            .observe(.value, with: {(snapshot) in
+                DispatchQueue.main.async {
+                    self.groupList = [Group]()
+                    self.tableView.reloadData()
+                }
+                
+                for group in snapshot.children {
+                    let newGroup = Group(snapshot: group as! FIRDataSnapshot)
+                    newGroups.insert(newGroup, at: 0)
+                }
+                MBProgressHUD.hide(for: self.view, animated: true)
+                DispatchQueue.main.async {
+                    self.groupList = newGroups
+                    self.tableView.reloadData()
+                }
+            }) {(error) in
+                print(error.localizedDescription)
+        }
     }
     
+    
+    // Check existance of mobile number in DB
+    func checkExistOf(mobileNumber: String) {
+        DataService().REF_USERS.queryOrdered(byChild: "\(USER_MOBILE_NUMBER)")
+            .queryEqual(toValue: mobileNumber)
+            .observeSingleEvent(of: .value) {(snapshot: FIRDataSnapshot) in
+                
+                // Exist count for mobile number
+                print("Mobile number check exist: Exist count: \(snapshot.childrenCount)")
+                
+                // print list username who is using that mobile number
+                for userSnapshot in snapshot.children {
+                    let newUser = User(snapshot: userSnapshot as! FIRDataSnapshot)
+                    print(newUser.userName)
+                }
+        }
+    }
 }
 
 extension GroupsViewController: UITableViewDelegate, UITableViewDataSource {
