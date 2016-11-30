@@ -45,6 +45,9 @@ class UserProfileVC: UIViewController {
             setObserveUserLocation()
             // for location test: END
             
+            
+            UserController().UpdateUserLocation(userID: "s4poiMlIxwOHIoRnLzifKaN3MHC3", lat: "111", long: "222")
+            
             return
         }
         
