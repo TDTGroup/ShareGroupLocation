@@ -11,7 +11,8 @@ import FirebaseAuth
 
 enum ErrorMessageType: String {
     case InvalidEmailError = "This email cannot be used. Please ensure that the spelling is correct.",
-    InvalidPasswordError = "Password cannot be empty. Please ensure that password is provided."
+    InvalidPasswordError = "Password cannot be empty. Please ensure that password is provided.",
+    InvalidUserNameError = "User name cannot be empty. Please ensure that user name is provided."
 }
 
 class HelpVC: UIViewController {

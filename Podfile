@@ -22,4 +22,6 @@ target 'ShareGroupLocation' do
   pod 'GoogleMaps'
 
   pod 'MBProgressHUD'
+  
+  pod 'ImageLoader'
 end

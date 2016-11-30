@@ -9,6 +9,8 @@
 import UIKit
 import FirebaseAuth
 import FirebaseDatabase
+import MBProgressHUD
+import ImageLoader
 
 class UserProfileVC: UIViewController {
     
@@ -20,6 +22,7 @@ class UserProfileVC: UIViewController {
     @IBOutlet weak var mobileNumberTextField: UITextField!
     
     let pickerController = UIImagePickerController()
+    var userProfileRef: FIRDatabaseReference!
     
     override func viewWillAppear(_ animated: Bool) {
         if (AuthUser.currentAuthUser != nil){
@@ -53,21 +56,48 @@ class UserProfileVC: UIViewController {
         super.viewDidLoad()
         self.hideKeyboardWhenTappedAround()
         //getGroupByCurrentUser()
+        
+        
+        userProfileRef = DataService().REF_USERS.child("\(getCurrentUserUid())")
+        // Get user Profile
+        setObserveUserProfile()
+    }
+    
+    // set observe for user profile
+    func setObserveUserProfile() {
+        MBProgressHUD.showAdded(to: self.view, animated: true)
+        
+        userProfileRef
+            .observeSingleEvent(of: .value) {(profileSnapshot: FIRDataSnapshot) in
+                if profileSnapshot.childrenCount > 0 {
+                    let user = User(snapshot: profileSnapshot)
+                    let profilePicURL =  URL(string: user.profilePicUrl)
+                    
+                    self.usernameTextField.text = user.userName
+                    self.emailTextField.text = user.email
+                    self.passwordTextField.text = "********"
+                    self.mobileNumberTextField.text = user.mobileNumber
+                    self.userImageView.load.request(with: profilePicURL!, onCompletion: { (image, error, nil) in
+                        MBProgressHUD.hide(for: self.view, animated: true)
+                        if error !=  nil {
+                            print("Error downloading profile picture")
+                            self.displayErrorMessage(messageText: error!.localizedDescription)
+                        }
+                    })
+                } else {
+                    print("profile nil")
+                }
+        }
     }
     
     // === TRUNG: BEGIN =============================
     
     var userLocationRef: FIRDatabaseReference!
     
-//    override func viewWillAppear(_ animated: Bool) {
-//        userLocationRef = DataService().REF_USERS.child("\(getCurrentUserUid())/\(USER_LOCATION)")
-//        // set observe everytime view appear (while viewdidload only excutes once)
-//        setObserveUserLocation()
-//    }
-
     override func viewWillDisappear(_ animated: Bool) {
         // remove listener when view not appear
         userLocationRef.removeAllObservers()
+        //userProfileRef.removeAllObservers()
     }
     
     // set observe for user location
@@ -85,6 +115,33 @@ class UserProfileVC: UIViewController {
     }
     
     // === TRUNG: END =============================
+    
+    @IBAction func onUpdateButton(_ sender: CustomizableButton) {
+        self.view.endEditing(true)
+        
+        let userName = usernameTextField.text!
+        
+        // Check for valid userName
+        if userName.isEmpty {
+            displayErrorMessage(messageType: .InvalidUserNameError)
+            return
+        }
+        
+        // Resize image before upload
+        let resizedPicture = self.ResizeImage(image: userImageView.image!, targetSize: CGSize(width: 200.0, height: 200.0))
+        let pictureData = UIImageJPEGRepresentation(resizedPicture, 0.70)
+        
+        // Upload profile pic to storage -> update user record in DB
+        excuteUpdateUserFlow(userName: userName,
+                             mobileNumber: mobileNumberTextField.text!,
+                             pictureData: pictureData as NSData!) {(error: Error?) in
+                                
+                                if error != nil {
+                                    print("HAS ERROR HERE")
+                                    self.displayErrorMessage(messageText: error!.localizedDescription)
+                                }
+        }
+    }
     
     @IBAction func onLogOutButtonTapped(_ sender: Any) {
         AuthUser.currentAuthUser = nil
@@ -146,3 +203,43 @@ extension UserProfileVC: UIImagePickerControllerDelegate {
 extension UserProfileVC: UINavigationControllerDelegate {
     
 }
+
+extension UserProfileVC {
+    func excuteUpdateUserFlow(userName: String, mobileNumber: String, pictureData: NSData!,
+                              completion: @escaping (Error?) -> Void) {
+        MBProgressHUD.showAdded(to: self.view, animated: true)
+        var authUser = FIRAuth.auth()?.currentUser
+        
+        // 2 - Set Auth user info if no error
+        print("2 ------ BEGIN OF: -- setUserInfo")
+        StorageService().setUserInfo(user: authUser, userName: userName, pictureData: pictureData){
+            (setUser: FIRUser?, setUserInfoError: Error?) in
+            if setUserInfoError != nil {
+                print(setUserInfoError!.localizedDescription)
+                completion(setUserInfoError)
+            }
+            
+            if setUser != nil {
+                // Auth user now has photoURL from storage
+                authUser = setUser
+                
+                // 3 - Save user info to Firebase DB if no error
+                print("3 ------ BEGIN OF: -- saveUserInfo")
+                DataService().saveUserInfo(user: authUser, mobileNumber: mobileNumber) {(saveUserInfoError: Error?) in
+                    if saveUserInfoError != nil {
+                        print(saveUserInfoError!.localizedDescription)
+                        completion(saveUserInfoError)
+                    }
+                    MBProgressHUD.hide(for: self.view, animated: true)
+                    print("------ FINISHED UPDATE USER")
+                    self.displayAlert(title: "Update Profile",
+                                      text: "Your profile has been successfully updated.",
+                                      actionTitle: "OK")
+                }
+            }
+            print("3 ------ END OF: -- saveUserInfo")
+        }
+        print("2 ------ END OF: -- setUserInfo")
+    }
+}
+

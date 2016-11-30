@@ -85,7 +85,7 @@ class UserController {
     
     
     // MARK: ADD FUNCTIONS
-    // Add use to Firebase DB
+    // Add user to Firebase DB
     func addToDatabase(user: User) {
         if user.dictData == nil {
             return
@@ -96,4 +96,32 @@ class UserController {
         let childUpdate = ["\(userKey)": user.dictData]
         usersNodeRef.updateChildValues(childUpdate)
     }
+    
+    // Update user to Firebase DB
+    func UpdateToDatabase(user: User) {
+        let usersNodeRef = DataService.ds.REF_USERS
+        let userKey = usersNodeRef.child(user.userKey)
+        let childUpdate = ["\(userKey)": user.dictData]
+        usersNodeRef.updateChildValues(childUpdate)
+    }
+    
+//    // 3 - Add User Info to Firebase Database, then log in
+//    func UpdateToDatabase(user: User!
+//                      completion: @escaping (Error?) -> Void){
+//        
+//        let userInfo = [USER_NAME: user.userName as AnyObject,
+//                        USER_EMAIL: user.email as AnyObject,
+//                        USER_MOBILE_NUMBER: user.mobileNumber as AnyObject,
+//                        USER_PIC_URL: String(describing: user.photoURL!) as AnyObject]
+//        
+//        print("3.1 ------ BEGIN OF: -- setValue")
+//        REF_USERS.child(user.uid).setValue(userInfo) { (error, ref) in
+//            if error != nil {
+//                print(error!.localizedDescription)
+//                completion(error)
+//            }
+//            completion(nil)
+//        }
+//        print("3.1 ------ END OF: -- setValue")
+//    }
 }
