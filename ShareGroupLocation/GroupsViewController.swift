@@ -28,7 +28,6 @@ class GroupsViewController: UIViewController {
         if let authUser = FIRAuth.auth()?.currentUser {
             print("group view controller: \(authUser.uid)")
             print("\(AuthUser.currentAuthUser?.displayName)")
-            //loadListGroup()
             checkExistOf(mobileNumber: "111111")
         }
         
@@ -48,49 +47,22 @@ class GroupsViewController: UIViewController {
         
     }
     
-    /*
-    func loadListGroup() {
-        MBProgressHUD.showAdded(to: self.view, animated: true)
-        
-        DataService().REF_GROUPS.observe(.value, with: { (snapshot) in
-            var newGroups = [Group]()
-            for group in snapshot.children {
-                let newGroup = Group(snapshot: group as! FIRDataSnapshot)
-                newGroups.insert(newGroup, at: 0)
-            }
-            MBProgressHUD.hide(for: self.view, animated: true)
-            self.groupList = newGroups
-            self.tableView.reloadData()
-            
-            
-        }) { (error) in
-            print(error.localizedDescription)
-        }
-    }*/
-    
     // Get all groups of current user
     // !!! Currently cannot clear old data of tableview !!!
     func setObserveGroupList() {
-        var newGroups = [Group]()
         MBProgressHUD.showAdded(to: self.view, animated: true)
         
-        DataService().REF_GROUPS.queryOrdered(byChild: "\(GROUP_MEETING_MEMBERS)/\(getCurrentUserUid())")
+        groupRef.queryOrdered(byChild: "\(GROUP_MEETING_MEMBERS)/\(getCurrentUserUid())")
             .queryEqual(toValue: GROUP_DUMMY_VALUE) // dummy value: "TRUE"
             .observe(.value, with: {(snapshot) in
-                DispatchQueue.main.async {
-                    self.groupList = [Group]()
-                    self.tableView.reloadData()
-                }
-                
+                var newGroups = [Group]()
                 for group in snapshot.children {
                     let newGroup = Group(snapshot: group as! FIRDataSnapshot)
                     newGroups.insert(newGroup, at: 0)
                 }
+                self.groupList = newGroups
+                self.tableView.reloadData()
                 MBProgressHUD.hide(for: self.view, animated: true)
-                DispatchQueue.main.async {
-                    self.groupList = newGroups
-                    self.tableView.reloadData()
-                }
             }) {(error) in
                 print(error.localizedDescription)
         }
@@ -99,7 +71,7 @@ class GroupsViewController: UIViewController {
     
     // Check existance of mobile number in DB
     func checkExistOf(mobileNumber: String) {
-        DataService().REF_USERS.queryOrdered(byChild: "\(USER_MOBILE_NUMBER)")
+        groupRef.queryOrdered(byChild: "\(USER_MOBILE_NUMBER)")
             .queryEqual(toValue: mobileNumber)
             .observeSingleEvent(of: .value) {(snapshot: FIRDataSnapshot) in
                 

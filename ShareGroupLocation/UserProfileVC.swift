@@ -77,15 +77,21 @@ class UserProfileVC: UIViewController {
                     self.emailTextField.text = user.email
                     self.passwordTextField.text = "********"
                     self.mobileNumberTextField.text = user.mobileNumber
-                    self.userImageView.load.request(with: profilePicURL!, onCompletion: { (image, error, nil) in
+                    if user.profilePicUrl != nil {
+                        self.userImageView.load.request(with: profilePicURL!, onCompletion: { (image, error, nil) in
+                            MBProgressHUD.hide(for: self.view, animated: true)
+                            if error !=  nil {
+                                print("Error downloading profile picture")
+                                self.displayErrorMessage(messageText: error!.localizedDescription)
+                            }
+                        })
+                    } else {
                         MBProgressHUD.hide(for: self.view, animated: true)
-                        if error !=  nil {
-                            print("Error downloading profile picture")
-                            self.displayErrorMessage(messageText: error!.localizedDescription)
-                        }
-                    })
+                    }
+                    
                 } else {
                     print("profile nil")
+                    MBProgressHUD.hide(for: self.view, animated: true)
                 }
         }
     }
