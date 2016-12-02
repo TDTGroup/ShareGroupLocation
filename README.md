@@ -65,6 +65,13 @@ https://docs.google.com/forms/d/1SmK7uBspaH23wReSyJGkhL7-9xrcW4uppJv87b3A4gA/vie
 - MBProgressHUD
 
 
+## Video Walkthrough
+
+Here's a walkthrough of implemented user stories:
+
+<img src='https://drive.google.com/open?id=0B9KOsD43YK4wZXJIdE9MQTZwc1U' title='Video Walkthrough - My Group' width='' alt='Video Walkthrough - My Group' />
+
+
 ## License
 Copyright [2016] [TDTGroup]
 Licensed under the Apache License, Version 2.0 (the "License");
