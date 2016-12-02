@@ -111,4 +111,17 @@ class UserController {
         let childUpdate = ["\(USER_LOCATION_LAT)": lat, "\(USER_LOCATION_LONG)": long]
         usersLocationNodeRef.updateChildValues(childUpdate)
     }
+    
+    func getUserProfile(userID: String){
+        DataService().REF_USERS.child(userID)
+            .observeSingleEvent(of: .value) {(snapshot: FIRDataSnapshot) in
+                print(" => => \(snapshot.value)")
+                
+                // If user has no record in DB
+                if (snapshot.childrenCount == 0){
+                    
+                }
+        }
+    }
+    
 }

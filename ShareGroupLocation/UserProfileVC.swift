@@ -46,7 +46,8 @@ class UserProfileVC: UIViewController {
             // for location test: END
             
             
-            UserController().UpdateUserLocation(userID: "s4poiMlIxwOHIoRnLzifKaN3MHC3", lat: "111", long: "222")
+            //UserController().UpdateUserLocation(userID: "s4poiMlIxwOHIoRnLzifKaN3MHC3", lat: "111", long: "222")
+            //UserController().getUserProfile(userID: getCurrentUserUid())
             
             return
         }
