@@ -4,15 +4,15 @@
 ## User Stories
 **Required** features:
 ### Login
-- [ ] User can sign up/sign in by email/password or use OAuth login flow (Facebook/Google).
-- [ ] The current signed in user will be persisted across restarts.
+- [x] User can sign up/sign in by email/password or use OAuth login flow (Facebook/Google).
+- [x] The current signed in user will be persisted across restarts.
 
 ### User
-- [ ] Can edit profile (name, profile image, mobile number, change password).
+- [x] Can edit profile (name, profile image, mobile number, change password).
 - [ ] Can view pending invitations to join groups (Action: Accept, Decline).
 
 ### Group
-- [ ] View group list (in real time).
+- [x] View group list (in real time).
 - [ ] View/edit group details (in real time).
    - [ ] Add/remove group members.
    - [ ] Leave group.
@@ -21,12 +21,12 @@
    - [ ] Add group members using system contacts: if the contact number is registered then send invitation to join group (in app).
    
 ### Group Map
-- [ ] Show members location, group location on map view (real time).
-   - [ ] Scale the map view to see all online member locations.
+- [x] Show members location, group location on map view (real time).
+   - [x] Scale the map view to see all online member locations.
 - [ ] Group creater can edit group location:
-   - [ ] By pinning on map view (show suggested places).
-   - [ ] By selecting place from search page.
-- [ ] Show route direction to group (for current user).
+   - [x] By pinning on map view (show suggested places).
+   - [x] By selecting place from search page.
+- [x] Show route direction to group (for current user).
 
 
 **Optional** features:
@@ -44,7 +44,7 @@
 - [ ] Can sync Facebook friends (or Google contacts) to system contact.
 
 ### Group Map
-- [ ] Show estimate time to arrive for each member.
+- [x] Show estimate time to arrive for each member.
 - [ ] User can update in group status (Ex: I'm already here, I'll be late for ..., Sorry, couldn't make it, ...)
 
 
